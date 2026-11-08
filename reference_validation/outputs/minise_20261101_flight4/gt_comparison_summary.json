@@ -1,0 +1,97 @@
+{
+  "minise_20261101_flight4 / depth_ray": {
+    "n": 12,
+    "mean_position_error_m": 2.95,
+    "median_position_error_m": 2.43
+  },
+  "minise_20261101_flight4 / ground_plane": {
+    "n": 12,
+    "mean_position_error_m": 2.66,
+    "median_position_error_m": 2.74
+  },
+  "minise_20261101_flight4 / fusion": {
+    "n": 12,
+    "mean_position_error_m": 2.5,
+    "median_position_error_m": 2.33
+  },
+  "minise_20261101_flight4_depth_pro / depth_ray": {
+    "n": 12,
+    "mean_position_error_m": 8.2,
+    "median_position_error_m": 6.99
+  },
+  "minise_20261101_flight4_depth_pro / ground_plane": {
+    "n": 12,
+    "mean_position_error_m": 2.66,
+    "median_position_error_m": 2.74
+  },
+  "minise_20261101_flight4_depth_pro / fusion": {
+    "n": 12,
+    "mean_position_error_m": 2.53,
+    "median_position_error_m": 2.63
+  },
+  "minise_20261101_flight4_ground_scaled / depth_ray": {
+    "n": 12,
+    "mean_position_error_m": 2.95,
+    "median_position_error_m": 2.43
+  },
+  "minise_20261101_flight4_ground_scaled / ground_plane": {
+    "n": 12,
+    "mean_position_error_m": 2.66,
+    "median_position_error_m": 2.74
+  },
+  "minise_20261101_flight4_ground_scaled / fusion": {
+    "n": 12,
+    "mean_position_error_m": 2.5,
+    "median_position_error_m": 2.33
+  },
+  "minise_20261101_flight4_ground_scaled / ground_scaled": {
+    "n": 12,
+    "mean_position_error_m": 2.66,
+    "median_position_error_m": 2.74
+  },
+  "minise_20261101_flight4_lingbot / depth_ray": {
+    "n": 12,
+    "mean_position_error_m": 2.9,
+    "median_position_error_m": 2.43
+  },
+  "minise_20261101_flight4_lingbot / ground_plane": {
+    "n": 12,
+    "mean_position_error_m": 2.66,
+    "median_position_error_m": 2.74
+  },
+  "minise_20261101_flight4_lingbot / fusion": {
+    "n": 12,
+    "mean_position_error_m": 2.48,
+    "median_position_error_m": 2.33
+  },
+  "minise_20261101_flight4_yolo_finetuned / depth_ray": {
+    "n": 12,
+    "mean_position_error_m": 26.19,
+    "median_position_error_m": 22.78
+  },
+  "minise_20261101_flight4_yolo_finetuned / ground_plane": {
+    "n": 12,
+    "mean_position_error_m": 2.66,
+    "median_position_error_m": 2.74
+  },
+  "minise_20261101_flight4_yolo_finetuned / fusion": {
+    "n": 12,
+    "mean_position_error_m": 2.66,
+    "median_position_error_m": 2.74
+  },
+  "minise_20261101_flight4_yolo_original / depth_ray": {
+    "n": 12,
+    "mean_position_error_m": 10.62,
+    "median_position_error_m": 9.85
+  },
+  "minise_20261101_flight4_yolo_original / ground_plane": {
+    "n": 12,
+    "mean_position_error_m": 2.66,
+    "median_position_error_m": 2.74
+  },
+  "minise_20261101_flight4_yolo_original / fusion": {
+    "n": 12,
+    "mean_position_error_m": 2.66,
+    "median_position_error_m": 2.74
+  }
+}

@@ -1,0 +1,26 @@
+{
+ "about": "DJI Mini SE flight with the person standing at the takeoff point. Photos were run with person_geolocator.photos (pose from the DJI Fly flight log) into outputs/<run>; score_minise_flight.py --sheet 8 scores every method against the recorded position.",
+ "flights": [
+  {
+   "sheet_id": 8,
+   "title": "Mini SE flight 4",
+   "run": "minise_20261101_flight4",
+   "label": "2026-11-01, person standing at the takeoff point, six settings at 7-25 m (DJI_0295-0306)",
+   "drone_latitude": 33.936053720381835,
+   "drone_longitude": -84.52689589158682,
+   "note": "Drone location is the takeoff point from the DJI Fly flight log. The person stood at that point, so the home position is the real coordinate: a consumer GPS fix good to roughly 1-2 m, with the standing spot not marked.",
+   "source_image": null,
+   "truth": [
+    {
+     "person_name": "Person at the takeoff point (flight-log home position)",
+     "latitude": 33.936053720381835,
+     "longitude": -84.52689589158682,
+     "latitude_dms": "33°56′09.8″ N",
+     "longitude_dms": "84°31′36.8″ W",
+     "status": "takeoff_gps_fix",
+     "auto_fill": true
+    }
+   ]
+  }
+ ]
+}

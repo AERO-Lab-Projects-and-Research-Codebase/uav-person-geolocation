@@ -1,0 +1,58 @@
+{
+ "model": "lingbot",
+ "image_size": [
+  4000,
+  2250
+ ],
+ "geometry_status": "provisional",
+ "geometry_errors": [],
+ "people": [
+  {
+   "index": 1,
+   "bbox": [
+    2049.3203125,
+    1125.1475830078125,
+    2110.6728515625,
+    1264.5263671875
+   ],
+   "confidence": 0.8996015191078186,
+   "depth_m": 24.854598999023438,
+   "valid_fraction": 1.0,
+   "sample_pixel": [
+    2079.5,
+    1183.5
+   ],
+   "methods": {
+    "depth_ray": {
+     "status": "estimated",
+     "reason": null,
+     "lat": 33.93606091254193,
+     "lon": -84.52695367896585,
+     "range_m": 24.87055739871002
+    },
+    "ground_plane": {
+     "status": "estimated",
+     "reason": null,
+     "lat": 33.936042942428614,
+     "lon": -84.52692488634133,
+     "range_m": 30.033410199265173
+    }
+   },
+   "disagreement_m": 3.3256693562406654
+  }
+ ],
+ "seconds": 1.7774480000080075,
+ "photo": "DJI_0303.JPG",
+ "utc": "2026-11-01T21:42:17+00:00",
+ "time_source": "exif",
+ "pose": {
+  "hfov_deg": 71.59200319126327,
+  "lat": 33.93616167809359,
+  "lon": -84.52711728849458,
+  "altitude_hae": 224.54578,
+  "height_above_ground_m": 20.3,
+  "heading_deg": 124.27669908081464,
+  "pitch_deg": -39.66699080814698,
+  "roll_deg": 0.0
+ }
+}
