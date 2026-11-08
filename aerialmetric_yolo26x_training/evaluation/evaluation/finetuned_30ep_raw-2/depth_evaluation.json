@@ -1,0 +1,56 @@
+{
+  "created_utc": "2026-10-05T19:29:10.704963+00:00",
+  "environment": {
+    "python": "3.14.7",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "ultralytics": "8.4.146",
+    "torch": "2.14.0+cu130",
+    "torch_cuda_build": "13.0",
+    "cuda_available": true,
+    "gpu": {
+      "index": 0,
+      "name": "NVIDIA RTX 4000 Ada Generation",
+      "compute_capability": "8.9",
+      "total_gib": 19.99,
+      "free_gib": 18.81
+    }
+  },
+  "checkpoint": "C:\\Users\\hkhan42\\Desktop\\aerialmetric_yolo26x_training\\aerialmetric_yolo26x_training\\runs\\depth\\aerialmetric_yolo26x\\weights\\best.pt",
+  "data_source": "C:\\Users\\hkhan42\\Desktop\\aerialmetric_yolo26x_training\\aerialmetric_yolo26x_training\\dataset\\data.yaml",
+  "data_root": "C:\\Users\\hkhan42\\Desktop\\aerialmetric_yolo26x_training\\aerialmetric_yolo26x_training\\dataset",
+  "split": "test",
+  "split_check": {
+    "images": 591,
+    "samples": [
+      {
+        "image": "C:\\Users\\hkhan42\\Desktop\\aerialmetric_yolo26x_training\\aerialmetric_yolo26x_training\\dataset\\images\\test\\000fc4c847c1bbd8_L1_000116.jpg",
+        "valid_pixels": 391680,
+        "max_m": 305.57000732421875
+      },
+      {
+        "image": "C:\\Users\\hkhan42\\Desktop\\aerialmetric_yolo26x_training\\aerialmetric_yolo26x_training\\dataset\\images\\test\\7e3bd378997d2b3d_ODM6-output_000361.jpg",
+        "valid_pixels": 399636,
+        "max_m": 319.3599853515625
+      },
+      {
+        "image": "C:\\Users\\hkhan42\\Desktop\\aerialmetric_yolo26x_training\\aerialmetric_yolo26x_training\\dataset\\images\\test\\ff6e5a0859bc1c8a_ODM6-output_000411.jpg",
+        "valid_pixels": 440064,
+        "max_m": 151.08999633789062
+      }
+    ]
+  },
+  "imgsz": 640,
+  "max_depth_m": 500.0,
+  "raw_protocol": "No GT scale alignment. Uses checkpoint calibration as saved; does not fit on test.",
+  "metric_aggregation": "Mean of per-image metrics. GT <=0.001m or >=max_depth excluded; predictions clamped to bounds.",
+  "raw_metric": {
+    "metrics/delta1": 0.1002346700519543,
+    "metrics/delta2": 0.33275835229310924,
+    "metrics/delta3": 0.6611728805657823,
+    "metrics/abs_rel": 0.41809190268897767,
+    "metrics/rmse": 65.25248243683687,
+    "metrics/silog": 21.553063953386747,
+    "fitness": 0.1002346700519543
+  },
+  "images_scored": 591
+}

@@ -1,0 +1,12 @@
+# Standard 64-bit Python 3.12 or 3.14 (excluding 3.14.1).
+# Install NVIDIA-enabled torch/torchvision FIRST (see README.md).
+# Core application versions are pinned to the locally verified YOLO26 depth environment.
+torch==2.14.0
+torchvision==0.29.0
+ultralytics==8.4.146
+numpy==2.5.3
+Pillow==12.3.0
+PyYAML==6.0.3
+requests==2.34.2
+matplotlib==3.11.1
+opencv-python==5.0.0.93

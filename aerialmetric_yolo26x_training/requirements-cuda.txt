@@ -1,0 +1,4 @@
+# Install with the official CUDA 13.0 wheel index before requirements.txt.
+# Verified available on https://download.pytorch.org/whl/cu130
+torch==2.14.0
+torchvision==0.29.0
