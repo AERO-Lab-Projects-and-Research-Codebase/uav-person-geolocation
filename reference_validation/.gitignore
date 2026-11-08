@@ -1,0 +1,7 @@
+# Model runs are kept locally; the second-UAV flight's result JSON and summaries are tracked
+outputs/*
+!outputs/minise_20261101_flight4*/
+terrain/
+__pycache__/
+*.pyc
+review_*.html

@@ -1,0 +1,31 @@
+annotated-types==0.8.0
+-e git+https://github.com/apple-aiml-research/ml-depth-pro.git@9e65e4dbe9568d23c546fcec53302b10445e109e#egg=depth_pro
+einops==0.8.2
+googleapis-common-protos==1.75.5
+h5py==3.16.0
+hf-xet==1.6.0
+httpcore2==2.13.1
+httpx2==2.13.1
+huggingface_hub==2.1.1
+opentelemetry-api==1.45.0
+opentelemetry-exporter-http-transport==0.66b0
+opentelemetry-exporter-otlp-common==0.66b0
+opentelemetry-exporter-otlp-proto-common==1.45.0
+opentelemetry-exporter-otlp-proto-http==1.45.0
+opentelemetry-proto==1.45.0
+opentelemetry-sdk==1.45.0
+opentelemetry-semantic-conventions==0.66b0
+pillow_heif==1.8.0
+protobuf==7.36.2
+pydantic==2.13.5
+pydantic_core==2.46.5
+safetensors==0.8.0
+scipy==1.18.1
+termcolor==3.3.0
+timm==1.0.22
+tqdm==4.70.1
+truststore==0.10.4
+typing-inspection==0.4.4
+-e git+https://github.com/lpiccinelli-eth/UniDepth.git@8d8cfe4c7ee15297099983607febf0d4f32eb3d6#egg=unidepth
+wandb==0.30.0
+xxhash==4.0.1
