@@ -1,0 +1,29 @@
+{
+  "arguments": {
+    "camera": 0,
+    "image": null,
+    "width": 640,
+    "height": 480,
+    "device": "auto",
+    "confidence": 0.4,
+    "imgsz": 640,
+    "depth_imgsz": 640,
+    "resolution_level": 2,
+    "interval": 0.1,
+    "torch_threads": 8,
+    "intrinsics": null,
+    "detector_weights": "D:\\Projects\\Codes\\GRA Project\\Geolocation from Skydio for thermal applications\\skydio live data\\yolo26x.pt",
+    "yolo_weights": "D:\\Projects\\Codes\\GRA Project\\Geolocation from Skydio for thermal applications\\aerialmetric_yolo26x_training\\weights\\best.pt",
+    "unidepth_weights": "D:\\Projects\\Codes\\GRA Project\\Geolocation from Skydio for thermal applications\\models\\unidepth_v2",
+    "lingbot_weights": "D:\\Projects\\Codes\\GRA Project\\Geolocation from Skydio for thermal applications\\models\\lingbot_depth\\model.pt",
+    "output": null,
+    "headless": false,
+    "max_results": null,
+    "timeout": 0,
+    "check": false
+  },
+  "started_at": "2026-10-05T20:58:09.263197+00:00",
+  "depth_convention": "axial_z_meters",
+  "lingbot_seed": "UniDepth prediction",
+  "person_indices": "per-frame, left-to-right; not persistent identities"
+}
