@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Person Geolocator</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 1100px; margin: 1.5rem auto; padding: 0 1rem; }
+  label { display: block; margin: .5rem 0 .2rem; font-size: .9rem; }
+  fieldset { margin: 1rem 0; } #pose { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: .5rem 1rem; }
+  input[type=number], select { width: 100%; padding: .3rem; box-sizing: border-box; }
+  button { padding: .5rem 1.2rem; font-size: 1rem; } #warn { color: #8a5a00; font-size: .85rem; }
+  table { border-collapse: collapse; margin-top: 1rem; width: 100%; } td, th { border: 1px solid #ccc; padding: .3rem .5rem; font-size: .85rem; text-align: left; }
+  img { max-width: 100%; margin-top: 1rem; } .err { color: #b00020; }
+</style>
+</head>
+<body>
+<h1>Person Geolocator</h1>
+<form id="f">
+  <label>Image (JPEG)<input type="file" id="file" name="file" accept=".jpg,.jpeg,image/jpeg" required></label>
+  <label>Depth model<select name="model" id="model"></select></label>
+  <fieldset><legend>Camera pose <span id="src"></span></legend><div id="pose"></div></fieldset>
+  <ul id="warn"></ul>
+  <button id="run">Run</button> <span id="status"></span>
+</form>
+<div id="out"></div>
+<script>
+const FIELDS = [["lat","Latitude (deg)"],["lon","Longitude (deg)"],["altitude_hae","Camera altitude (m)"],
+  ["heading_deg","Heading, clockwise from north (deg)"],["pitch_deg","Pitch, up positive (deg)"],["roll_deg","Roll (deg)"],
+  ["hfov_deg","Horizontal FOV (deg)"],["height_above_ground_m","Camera height above ground (m)"]];
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+$("pose").innerHTML = FIELDS.map(([k, t]) => `<label>${t}<input type="number" step="any" name="${k}" id="${k}"></label>`).join("");
+fetch("/models").then(r => r.json()).then(m => {
+  $("model").innerHTML = Object.entries(m).map(([k, v]) => `<option value="${k}">${esc(v)}</option>`).join("");
+  $("model").value = "unidepth";
+});
+$("file").addEventListener("change", async () => {
+  const data = new FormData(); data.append("file", $("file").files[0]);
+  $("status").textContent = "Reading metadata...";
+  const r = await fetch("/metadata", { method: "POST", body: data }), body = await r.json();
+  if (!r.ok) { $("status").innerHTML = `<span class="err">${esc(body.error)}</span>`; return; }
+  FIELDS.forEach(([k]) => $(k).value = body.fields[k] === null ? "" : String(body.fields[k]));
+  $("src").textContent = `(read from ${body.source} metadata)`;
+  $("warn").innerHTML = body.warnings.map(w => `<li>${esc(w)}</li>`).join("");
+  $("status").textContent = "";
+});
+const link = (m) => m.status === "estimated"
+  ? `<a target="_blank" href="https://www.google.com/maps?q=${m.lat},${m.lon}">${m.lat.toFixed(6)}, ${m.lon.toFixed(6)}</a>` + (m.range_m == null ? "" : ` (${m.range_m.toFixed(1)} m)`)
+  : `<span title="${esc(m.reason || "")}">unavailable: ${esc(m.reason || "")}</span>`;
+$("f").addEventListener("submit", async e => {
+  e.preventDefault(); $("run").disabled = true; $("out").innerHTML = "";
+  $("status").textContent = "Running (the first run per model loads weights and is slow)...";
+  try {
+    const r = await fetch("/locate", { method: "POST", body: new FormData($("f")) }), b = await r.json();
+    if (!r.ok) throw new Error(b.error);
+    const hasTerrain = b.people.some(p => p.methods.terrain);
+    const rows = b.people.map(p => `<tr><td>${p.index}</td><td>${p.depth_m == null ? "n/a" : p.depth_m.toFixed(2)}</td>
+      <td>${link(p.methods.depth_ray)}</td><td>${link(p.methods.ground_plane)}</td>
+      ${hasTerrain ? `<td>${link(p.methods.terrain)}</td>` : ""}
+      <td>${p.disagreement_m == null ? "" : p.disagreement_m.toFixed(1)}</td></tr>`).join("");
+    $("out").innerHTML = `<p>${b.people.length} person(s), ${b.seconds.toFixed(1)} s, geometry: ${esc(b.geometry_status)} ${esc(b.geometry_errors.join(", "))}</p>
+      <table><tr><th>#</th><th>Depth (m)</th><th>GPS: depth ray</th><th>GPS: ground plane</th>${hasTerrain ? "<th>GPS: terrain</th>" : ""}<th>Depth vs ground disagreement (m)</th></tr>${rows}</table>
+      <img alt="Annotated image" src="data:image/jpeg;base64,${b.annotated_jpeg_base64}">`;
+    $("status").textContent = "";
+  } catch (err) { $("status").innerHTML = `<span class="err">${esc(err.message)}</span>`; }
+  $("run").disabled = false;
+});
+</script>
+</body>
+</html>
