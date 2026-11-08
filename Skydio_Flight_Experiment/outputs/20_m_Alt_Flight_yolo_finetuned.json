@@ -1,0 +1,215 @@
+{
+ "model": "yolo_finetuned",
+ "image_size": [
+  8192,
+  6144
+ ],
+ "geometry_status": "provisional",
+ "geometry_errors": [],
+ "people": [
+  {
+   "index": 1,
+   "bbox": [
+    1532.3914794921875,
+    5233.642578125,
+    1753.9124755859375,
+    5557.27734375
+   ],
+   "confidence": 0.7623959183692932,
+   "depth_m": 57.61923599243164,
+   "valid_fraction": 1.0,
+   "sample_pixel": [
+    1642.5,
+    5370.5
+   ],
+   "methods": {
+    "depth_ray": {
+     "status": "estimated",
+     "reason": null,
+     "lat": 33.935877857260756,
+     "lon": -84.52732165026168,
+     "range_m": 69.3698607317125
+    },
+    "ground_plane": {
+     "status": "estimated",
+     "reason": null,
+     "lat": 33.93597962520469,
+     "lon": -84.52713264257628,
+     "range_m": 19.883544712200916
+    },
+    "fusion": {
+     "status": "estimated",
+     "reason": null,
+     "lat": 33.93597962520469,
+     "lon": -84.52713264257628,
+     "range_m": 19.883544712200916,
+     "source": "ground_plane"
+    },
+    "ground_scaled": {
+     "status": "estimated",
+     "reason": null,
+     "lat": 33.9359693971279,
+     "lon": -84.52716027085397,
+     "range_m": 25.93484548185632
+    }
+   },
+   "disagreement_m": 20.80444504052575
+  },
+  {
+   "index": 2,
+   "bbox": [
+    2363.01513671875,
+    3776.862548828125,
+    2591.2587890625,
+    4022.104248046875
+   ],
+   "confidence": 0.8715915679931641,
+   "depth_m": 57.666263580322266,
+   "valid_fraction": 1.0,
+   "sample_pixel": [
+    2476.5,
+    3881.0
+   ],
+   "methods": {
+    "depth_ray": {
+     "status": "estimated",
+     "reason": null,
+     "lat": 33.93603000508701,
+     "lon": -84.5273735312629,
+     "range_m": 61.253357124961965
+    },
+    "ground_plane": {
+     "status": "estimated",
+     "reason": null,
+     "lat": 33.93602328421999,
+     "lon": -84.52716249522032,
+     "range_m": 20.34136101310289
+    },
+    "fusion": {
+     "status": "estimated",
+     "reason": null,
+     "lat": 33.93602328421999,
+     "lon": -84.52716249522032,
+     "range_m": 20.34136101310289,
+     "source": "ground_plane"
+    },
+    "ground_scaled": {
+     "status": "estimated",
+     "reason": null,
+     "lat": 33.936026279617245,
+     "lon": -84.5271796672566,
+     "range_m": 22.900382608878772
+    }
+   },
+   "disagreement_m": 19.526312077275932
+  },
+  {
+   "index": 3,
+   "bbox": [
+    3831.51123046875,
+    3206.37353515625,
+    3983.80126953125,
+    3464.49560546875
+   ],
+   "confidence": 0.9044235348701477,
+   "depth_m": 56.82002258300781,
+   "valid_fraction": 1.0,
+   "sample_pixel": [
+    3907.0,
+    3315.5
+   ],
+   "methods": {
+    "depth_ray": {
+     "status": "estimated",
+     "reason": null,
+     "lat": 33.936174540946915,
+     "lon": -84.52729712868417,
+     "range_m": 56.914568115993
+    },
+    "ground_plane": {
+     "status": "estimated",
+     "reason": null,
+     "lat": 33.936074784724354,
+     "lon": -84.52714306505325,
+     "range_m": 20.393814851723427
+    },
+    "fusion": {
+     "status": "estimated",
+     "reason": null,
+     "lat": 33.936074784724354,
+     "lon": -84.52714306505325,
+     "range_m": 20.393814851723427,
+     "source": "ground_plane"
+    },
+    "ground_scaled": {
+     "status": "estimated",
+     "reason": null,
+     "lat": 33.93608031627169,
+     "lon": -84.52715110313592,
+     "range_m": 21.278268605202456
+    }
+   },
+   "disagreement_m": 18.037560436123602
+  },
+  {
+   "index": 4,
+   "bbox": [
+    5034.03466796875,
+    3463.5419921875,
+    5241.00048828125,
+    3729.65478515625
+   ],
+   "confidence": 0.8860366940498352,
+   "depth_m": 56.390357971191406,
+   "valid_fraction": 1.0,
+   "sample_pixel": [
+    5137.0,
+    3576.5
+   ],
+   "methods": {
+    "depth_ray": {
+     "status": "estimated",
+     "reason": null,
+     "lat": 33.93625365287793,
+     "lon": -84.52717471598773,
+     "range_m": 58.03764491433091
+    },
+    "ground_plane": {
+     "status": "estimated",
+     "reason": null,
+     "lat": 33.93610119518572,
+     "lon": -84.52709839305119,
+     "range_m": 20.348638126643642
+    },
+    "fusion": {
+     "status": "estimated",
+     "reason": null,
+     "lat": 33.93610119518572,
+     "lon": -84.52709839305119,
+     "range_m": 20.348638126643642,
+     "source": "ground_plane"
+    },
+    "ground_scaled": {
+     "status": "estimated",
+     "reason": null,
+     "lat": 33.93610989331978,
+     "lon": -84.52710533752051,
+     "range_m": 21.698145810114248
+    }
+   },
+   "disagreement_m": 18.324848226680526
+  }
+ ],
+ "seconds": 0.7939761999878101,
+ "photo": "20_m_Alt_Flight.JPG",
+ "pose": {
+  "lat": 33.93602405515659,
+  "lon": -84.5270639119606,
+  "altitude_hae": 311.236869,
+  "heading_deg": 311.144985,
+  "pitch_deg": -58.539906,
+  "roll_deg": -0.00419,
+  "hfov_deg": 79.32213914377829,
+  "height_above_ground_m": 18.184690999999987
+ }
+}
