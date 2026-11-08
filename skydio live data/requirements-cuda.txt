@@ -1,0 +1,6 @@
+# Optional NVIDIA CUDA 13.0 build, verified on this laptop's RTX 5060.
+# Install using the same Python environment as main.py.
+--extra-index-url https://download.pytorch.org/whl/cu130
+-r requirements.txt
+torch==2.14.0+cu130
+torchvision==0.29.0+cu130

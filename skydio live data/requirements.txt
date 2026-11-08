@@ -1,0 +1,10 @@
+# Dashboard (main.py)
+flask
+opencv-python
+numpy
+
+# Detection notebooks
+screeninfo
+torch
+ultralytics>=8.4.146,<8.5
+ipykernel
