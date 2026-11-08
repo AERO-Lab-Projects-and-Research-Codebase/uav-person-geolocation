@@ -1,0 +1,33 @@
+# Python environments and caches
+.venv/
+.venvs/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Model sources, checkpoints and downloaded data (see README: Models)
+external/
+models/
+weights/
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.onnx
+*.npz
+aerialmetric_yolo26x_training/dataset/
+aerialmetric_yolo26x_training/downloads/
+unidepth_v2_finetune/downloads/
+unidepth_v2_finetune/dataset/
+
+# Photographs and videos are not distributed; result JSON and CSV are
+Skydio_Flight_Experiment/Skydio/
+*_annotated.jpg
+*.mp4
+*.LRV
+person_geolocator/outputs/
+reference_validation/terrain/
+reference_validation/review_*.html
+
+# DJI developer credentials
+dji_api_key.txt
