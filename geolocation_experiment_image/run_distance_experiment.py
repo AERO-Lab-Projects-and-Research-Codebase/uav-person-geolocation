@@ -4,6 +4,7 @@ Usage: python run_distance_experiment.py detect   -> detections.json + crops (pi
        python run_distance_experiment.py depth    -> results.csv (uses chosen.json: {file: person_index});
                                                    *_m samples the floor strip below the box, *_torso_m the torso patch
        python run_distance_experiment.py ground   -> adds flat ground-plane ranges (metadata pose and image pose) to results.csv
+       python run_distance_experiment.py scaled   -> adds the ground-scaled UniDepth reading (Method E, image pose) to results.csv
 """
 import csv, json, re, sys
 from pathlib import Path
@@ -202,5 +203,39 @@ def ground():
         w = csv.DictWriter(f, fieldnames=list(rows[0])); w.writeheader(); w.writerows(rows)
 
 
+def scaled():
+    """Add the ground-scaled UniDepth reading (Method E) to results.csv: UniDepth is re-run at level 9 and its
+    map rescaled by the ground it shows, with the image-read pose of ground() and every detection box excluded."""
+    import math
+    sys.path[:0] = [str(ROOT), str(ROOT / "webcam_depth"), str(ROOT / "reference_validation")]
+    from run_webcam_depth import DepthEngine, parser
+    from metadata_geometry import euler_rdf_to_ned, ground_scale
+    engine = DepthEngine(parser().parse_args(["--depth-imgsz", "1280", "--resolution-level", "9"]))
+    detections = json.loads((OUT / "detections.json").read_text())
+    with (OUT / "results.csv").open() as f:
+        rows = list(csv.DictReader(f))
+    for row in rows:
+        frame = cv2.imread(str(HERE / "Images" / row["image"]))
+        h, w = frame.shape[:2]
+        fx = w / 2 / math.tan(math.radians(float(row["hfov_deg"])) / 2)
+        capture = {"width": w, "height": h, "intrinsics": dict(fx=fx, fy=fx, cx=(w - 1) / 2, cy=(h - 1) / 2),
+                   "distortion_k1_k2_k3": (0.0, 0.0, 0.0),
+                   "camera_rdf_to_ned": euler_rdf_to_ned(0.0, float(row["image_pitch_deg"]), 0.0).tolist(),
+                   "telemetry": {"altitude_hae": float(row["image_height_m"])}, "assumed_launch_ground_hae_m": 0.0,
+                   "geometry_status": "provisional"}
+        engine.unidepth.device = engine.device
+        engine.unidepth.model.to(engine.device)
+        try:
+            depth = engine.unidepth.predict(frame)["depth"]
+        finally:
+            engine.unidepth.model.to("cpu"); engine.clear_cuda()
+        scale = ground_scale(depth, capture, frame.shape, [d["bbox"] for d in detections[row["image"]]])
+        assert scale is not None and 0.5 < scale < 2, (row["image"], scale)
+        row.update(ground_scale=round(scale, 3), ground_scaled_m=round(float(row["unidepth_m"]) * scale, 2))
+        print(row["image"], row["unidepth_m"], "x", row["ground_scale"], "=", row["ground_scaled_m"], "true", row["actual_m"], flush=True)
+    with (OUT / "results.csv").open("w", newline="") as f:
+        wr = csv.DictWriter(f, fieldnames=list(rows[0])); wr.writeheader(); wr.writerows(rows)
+
+
 if __name__ == "__main__":
-    {"detect": detect, "depth": depth, "ground": ground}[sys.argv[1]]()
+    {"detect": detect, "depth": depth, "ground": ground, "scaled": scaled}[sys.argv[1]]()
