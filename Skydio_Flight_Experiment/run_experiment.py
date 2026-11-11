@@ -1,16 +1,18 @@
 """Three people photographed by the Skydio from the launch point at 10-50 m; every depth model and placement
 method estimates each person's GPS, scored against the drone GPS of the nadir shot taken over that person's head.
 
-Truth: Person_N*.JPG are nadir shots with the drone over person N. The drone hovered 0.2-0.6 m off the head, so
-truth N is the ground-plane position of the box under the image centre in those shots (mean over shots); it
+Truth: the nadir shots (pitch below -85 deg) were taken with the drone over each person's head; shots within 3 m of
+each other are one person, numbered right to left as seen from the flight photos. The drone hovered 0.2-0.6 m off the
+head, so truth N is the ground-plane position of the box under the image centre in those shots (mean over shots); it
 reproduces the tape spacing (5.18 m / 5.94 m) where the raw drone GPS does not. truth.csv keeps both.
 Detections in a flight photo are matched to the three people by the pose-only ground-plane position (model
 independent): the triple whose mutual spacing best matches the truth spacing, ties broken by proximity, so a
 heading error (which rotates every estimate about the drone) cannot hand a person's slot to a bystander.
 
 Usage (from the project root, in the depth-comparison venv):
-    python Skydio_Flight_Experiment/run_experiment.py [--models unidepth depth_pro ...]
-Writes outputs/<photo>_<model>.json and _annotated.jpg (skipped when present), people.csv, truth.csv, summary.csv/.md.
+    python Skydio_Flight_Experiment/run_experiment.py [--models unidepth depth_pro ...] [--photos DIR --out DIR]
+Only the high-resolution visible frames are used (the 640x512 thermal pair of each Skydio shot is skipped).
+Writes <out>/<photo>_<model>.json and _annotated.jpg (skipped when present), people.csv, truth.csv, summary.csv/.md.
 """
 import argparse
 import csv
@@ -22,6 +24,8 @@ import sys
 from collections import defaultdict
 from pathlib import Path
 
+from PIL import Image
+
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 sys.path[:0] = [str(ROOT), str(ROOT / "reference_validation")]
@@ -30,26 +34,36 @@ from person_geolocator.metadata import read_pose  # noqa: E402
 from person_geolocator.models import MODELS, DepthModels  # noqa: E402
 from compare_to_ground_truth import local_enu  # noqa: E402
 
-PHOTOS = HERE / "Skydio"
-OUT = HERE / "outputs"
-PEOPLE = (1, 2, 3)
+NADIR_PITCH_DEG = -85
 
 
 def dist(lat0, lon0, lat, lon):
     return math.hypot(*local_enu(lat0, lon0, lat, lon))
 
 
+def nadir(r):
+    return r["pose"]["pitch_deg"] <= NADIR_PITCH_DEG
+
+
 def truth(results):
     """Truth lat/lon per person: the nadir shot's ground-plane position of the box under the image centre,
-    falling back to the drone GPS when no box was found there."""
+    falling back to the drone GPS when no box was found there. Nadir shots within 3 m are one person; people are
+    numbered right to left as seen from the flight photos (by bearing from the mean flight position, clockwise first)."""
+    groups = []
+    for r in sorted(filter(nadir, results.values()), key=lambda r: r["photo"]):
+        same = [g for g in groups if dist(r["pose"]["lat"], r["pose"]["lon"], g[0]["pose"]["lat"], g[0]["pose"]["lon"]) < 3]
+        (same[0] if same else groups.append([]) or groups[-1]).append(r)
+    flights = [r["pose"] for r in results.values() if not nadir(r)]
+    lat0, lon0 = statistics.fmean(p["lat"] for p in flights), statistics.fmean(p["lon"] for p in flights)
+    heading = math.degrees(math.atan2(sum(math.sin(math.radians(p["heading_deg"])) for p in flights),
+                                      sum(math.cos(math.radians(p["heading_deg"])) for p in flights)))
+    groups.sort(key=lambda g: -((bearing(lat0, lon0, g[0]["pose"]["lat"], g[0]["pose"]["lon"]) - heading + 180) % 360 - 180))
     rows = []
-    for n in PEOPLE:
-        shots = [p for p in sorted(PHOTOS.glob(f"Person_{n}*.JPG"))]
-        poses = [read_pose(p)["fields"] for p in shots]
+    for n, shots in enumerate(groups, 1):
+        poses = [r["pose"] for r in shots]
         drone = statistics.fmean(p["lat"] for p in poses), statistics.fmean(p["lon"] for p in poses)
         under = []
-        for shot in shots:
-            r = results[shot.stem]
+        for r in shots:
             w, h = r["image_size"]
             # the person under the drone is the box nearest the image centre, if the detector saw the head at all
             near = [p for p in r["people"] if p["methods"]["ground_plane"]["status"] == "estimated"
@@ -88,11 +102,14 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--models", nargs="+", choices=list(MODELS), default=list(MODELS))
     ap.add_argument("--conf", type=float, default=0.1, help="detector confidence floor; nadir heads score ~0.2")
+    ap.add_argument("--photos", type=Path, default=HERE / "Skydio", help="folder of Skydio JPGs (flight and nadir shots)")
+    ap.add_argument("--out", type=Path, default=HERE / "outputs")
     args = ap.parse_args()
+    OUT = args.out
     OUT.mkdir(exist_ok=True)
     models = DepthModels()
     models.detect = lambda frame: DepthModels.detect(models, frame, conf=args.conf)
-    photos = sorted(PHOTOS.glob("*.JPG"))
+    photos = [p for p in sorted(args.photos.glob("*.JPG")) if Image.open(p).width > 1000]
     results = {}
     for model in args.models:
         for path in photos:
@@ -117,7 +134,7 @@ def main():
 
     rows, errors, photos_seen = [], defaultdict(list), {}
     for (stem, model), r in results.items():
-        if stem.startswith("Person_"):
+        if nadir(r):
             continue
         pose = r["pose"]
         picked = assign(r["people"], truths)
