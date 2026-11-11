@@ -20,7 +20,7 @@ sys.path.insert(0, str(HERE.parent / "reference_validation"))
 from compare_to_ground_truth import local_enu  # noqa: E402
 
 OUT = HERE / "outputs"
-MODELS = {"unidepth": "UniDepth V2", "lingbot": "LingBot", "depth_pro": "Depth Pro", "yolo_original": "YOLO original", "yolo_finetuned": "YOLO fine-tuned"}
+MODELS = {"unidepth": "A1 UniDepth V2", "lingbot": "A2 LingBot", "depth_pro": "A3 Depth Pro", "yolo_original": "A4 YOLO26-depth", "yolo_finetuned": "C Fine-tuned YOLO26x"}
 COLOR = dict(zip(list(MODELS) + ["ground_plane"], ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300"]))  # dataviz categorical slots 1-6
 ALT_RAMP = {10: "#9ec5f4", 20: "#6da7ec", 30: "#3987e5", 40: "#256abf", 50: "#104281"}  # sequential blue
 MARKER = {"1": "o", "2": "s", "3": "^"}
@@ -37,7 +37,7 @@ def style(ax):
         ax.spines[side].set_visible(False)
     for side in ("left", "bottom"):
         ax.spines[side].set_color(MUTED)
-    ax.tick_params(colors=MUTED, labelsize=8)
+    ax.tick_params(colors=MUTED, labelsize=15)
     ax.grid(True, color="#e6e5e1", linewidth=.6)
     ax.set_axisbelow(True)
 
@@ -70,22 +70,22 @@ def gps_map():
         for p, (lat, lon) in truth.items():
             e, n = enu(lat, lon)
             ax.scatter(e, n, s=150, marker="*", color=TEXT, zorder=4)
-            ax.annotate(f"P{p}", (e, n), xytext=(6, 4), textcoords="offset points", fontsize=9, color=TEXT, weight="bold")
-        ax.set_title(title + (f"  ({outside} points off-chart)" if outside else ""), fontsize=10, color=TEXT, loc="left")
+            ax.annotate(f"P{p}", (e, n), xytext=(6, 4), textcoords="offset points", fontsize=16, color=TEXT, weight="bold")
+        ax.set_title(title + (f"  ({outside} points off-chart)" if outside else ""), fontsize=18, color=TEXT, loc="left")
         ax.set_xlim(-14, 14); ax.set_ylim(-14, 14)
     for ax in axes[1][:2]:
-        ax.set_xlabel("east of person 2 truth (m)", fontsize=9, color=MUTED)
+        ax.set_xlabel("east of person 2 reference (m)", fontsize=17, color=MUTED)
     axes[0][2].tick_params(labelbottom=True)
-    axes[0][2].set_xlabel("east of person 2 truth (m)", fontsize=9, color=MUTED)
+    axes[0][2].set_xlabel("east of person 2 reference (m)", fontsize=17, color=MUTED)
     for ax in axes[:, 0]:
-        ax.set_ylabel("north (m)", fontsize=9, color=MUTED)
-    handles = [plt.Line2D([], [], marker="*", color=TEXT, linestyle="", markersize=11, label="truth (nadir shot)"),
-               plt.Line2D([], [], marker="x", color=MUTED, linestyle="", label="drone position")]
+        ax.set_ylabel("north (m)", fontsize=17, color=MUTED)
+    handles = [plt.Line2D([], [], marker="*", color=TEXT, linestyle="", markersize=11, label="reference (nadir shot)"),
+               plt.Line2D([], [], marker="x", color=MUTED, linestyle="", label="aircraft position")]
     handles += [plt.Line2D([], [], marker=MARKER[p], color=MUTED, linestyle="", label=f"person {p}") for p in "123"]
     handles += [plt.Line2D([], [], marker="o", color=c, linestyle="", label=f"{a} m altitude") for a, c in ALT_RAMP.items()]
-    fig.legend(handles=handles, loc="lower center", ncol=10, fontsize=8, frameon=False, bbox_to_anchor=(.5, -.005))
-    fig.suptitle("Estimated person positions by model, all 12 flight photos", fontsize=12, color=TEXT, x=.01, ha="left")
-    fig.tight_layout(rect=(0, .04, 1, .97))
+    fig.legend(handles=handles, loc="lower center", ncol=5, fontsize=15, frameon=False, bbox_to_anchor=(.5, -.005))
+    fig.suptitle("Estimated person positions by model, all 12 flight photos", fontsize=20, color=TEXT, x=.01, ha="left")
+    fig.tight_layout(rect=(0, .08, 1, .96), h_pad=4)
     fig.savefig(OUT / "gps_map.png", dpi=160)
 
 
