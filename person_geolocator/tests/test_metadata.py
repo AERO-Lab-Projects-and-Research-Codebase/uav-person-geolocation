@@ -5,6 +5,7 @@ from person_geolocator.metadata import FIELDS, read_pose
 
 DJI = ROOT / "geolocation_experiment_image" / "Images" / "Human_15m.JPG"
 SKYDIO = ROOT / "Geolocation Reference Data" / "S1014277.JPG"
+SKYDIO_ZOOMED = ROOT / "Flight_Test_11_9_2026" / "S1019419.JPG"  # EXIF DigitalZoomRatio 1.94 on the 79.6 deg wide camera
 
 
 class MetadataTests(unittest.TestCase):
@@ -33,6 +34,13 @@ class MetadataTests(unittest.TestCase):
         self.assertAlmostEqual(f["hfov_deg"], 79.09, places=1)
         self.assertAlmostEqual(f["height_above_ground_m"], 9.34, places=1)
         self.assertIsNotNone(pose["capture"])
+
+    @unittest.skipUnless(SKYDIO_ZOOMED.exists(), "zoomed Skydio flight photo not distributed")
+    def test_skydio_digital_zoom_narrows_fov(self):
+        capture = read_pose(SKYDIO_ZOOMED)["capture"]
+        self.assertAlmostEqual(capture["digital_zoom"], 1.94)
+        self.assertAlmostEqual(capture["telemetry"]["sensor_hfov"], 46.5, delta=0.1)  # 2 atan(tan(79.6/2) / 1.94)
+        self.assertAlmostEqual(capture["intrinsics"]["cx"], (4047.62 - 4096) * 1.94 + 4096, delta=0.1)
 
 
 if __name__ == "__main__":

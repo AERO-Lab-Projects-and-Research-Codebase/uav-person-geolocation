@@ -78,6 +78,7 @@ def read_capture(path):
     with Image.open(path) as im:
         width, height = im.size
         orientation = int(im.getexif().get(274, 1))
+        zoom = float(im.getexif().get_ifd(0x8769).get(0xA404) or 1)  # EXIF DigitalZoomRatio
     match = re.search(rb"<x:xmpmeta\b.*?</x:xmpmeta>", path.read_bytes(), re.S)
     if not match:
         raise ValueError("missing_embedded_xmp")
@@ -94,6 +95,11 @@ def read_capture(path):
         return [_number(resource.get(key)) for key in keys] if isinstance(resource, dict) else [None]*len(keys)
     fx, fy = vector("CalibratedFocalLength", ["X", "Y"])
     cx, cy = vector("CalibratedOpticalCenter", ["X", "Y"])
+    if zoom > 1 and None not in (fx, fy, cx, cy):
+        # The calibration describes the full sensor; a digital zoom crops the central 1/zoom about the image centre and
+        # resamples it to full size, scaling the focal lengths and moving the optical centre toward the middle.
+        fx, fy = fx * zoom, fy * zoom
+        cx, cy = (cx - width / 2) * zoom + width / 2, (cy - height / 2) * zoom + height / 2
     roll, pitch, yaw = vector("CameraOrientationNED", ["Roll", "Pitch", "Yaw"])
     lat, lon, altitude, relative = [_number(raw.get(k)) for k in
                                   ("Latitude", "Longitude", "AbsoluteAltitude", "RelativeAltitude")]
@@ -140,7 +146,7 @@ def read_capture(path):
                  "sensor_vfov": math.degrees(2*math.atan(height/(2*fy))) if fy and fy > 0 else None,
                  "uid": raw.get("VehicleId")}
     return {"path": str(path.resolve()), "width": width, "height": height,
-            "exif_orientation": orientation, "camera_source": raw.get("CameraSource"),
+            "exif_orientation": orientation, "digital_zoom": zoom, "camera_source": raw.get("CameraSource"),
             "photo_kind": raw.get("PhotoKind"), "capture_time": raw.get("CreateDate"),
             "capture_utime": raw.get("CaptureUtime"), "request_nonce": raw.get("RequestNonce"),
             "intrinsics": dict(fx=fx, fy=fy, cx=cx, cy=cy), "distortion_k1_k2_k3": distortion,
