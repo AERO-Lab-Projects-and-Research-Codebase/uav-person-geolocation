@@ -1,11 +1,15 @@
 """Independent check of the Skydio camera heading: project each person's feet and shadow tip onto the launch
 plane with the photo's own pose, and compare the shadow bearing with the solar shadow azimuth at capture time.
 A positive result means the metadata heading reads that many degrees clockwise of true.
+The mean bias of a photo is then applied as a yaw correction (every estimate turned about the drone by -bias) and the
+position error against the nadir truth is printed before and after, from outputs/people.csv and truth.csv.
 
 Pixel picks (full-resolution x, y) were read by eye from crops; expect +-2 deg at 10 m and +-3 deg at 50 m.
 Usage: python Skydio_Flight_Experiment/check_heading_from_shadows.py
 """
+import csv
 import math
+import statistics
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -14,6 +18,7 @@ import numpy as np
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent / "reference_validation"))
+from compare_to_ground_truth import local_enu  # noqa: E402
 from metadata_geometry import calibrated_ray, read_capture  # noqa: E402
 
 # photo -> (capture UTC, {person: (feet pixel, shadow tip pixel)})
@@ -45,6 +50,23 @@ def sun_azimuth(lat, lon, when):
     return (from_south + 180) % 360 if ha > 0 else (540 - from_south) % 360, 90 - math.degrees(zen)
 
 
+def corrected_errors(name, lat, lon, bias_deg, model="unidepth", methods=("ground_plane", "ground_scaled", "fusion")):
+    """{method: (mean error, mean error after turning each estimate about the drone by -bias_deg)} for one photo."""
+    truth = {r["person"]: (float(r["lat"]), float(r["lon"])) for r in csv.DictReader((HERE / "outputs" / "truth.csv").open())}
+    rows = [r for r in csv.DictReader((HERE / "outputs" / "people.csv").open()) if r["image"] == name and r["model"] == model]
+    c, s = math.cos(math.radians(bias_deg)), math.sin(math.radians(bias_deg))
+    out = {}
+    for m in methods:
+        before, after = [], []
+        for r in rows:
+            n, e = local_enu(lat, lon, float(r[f"{m}_lat"]), float(r[f"{m}_lon"]))
+            tn, te = local_enu(lat, lon, *truth[r["person"]])
+            before.append(math.hypot(n - tn, e - te))
+            after.append(math.hypot(n * c + e * s - tn, e * c - n * s - te))
+        out[m] = statistics.fmean(before), statistics.fmean(after)
+    return out
+
+
 def main():
     for name, picks in PICKS.items():
         cap = read_capture(HERE / "Skydio" / name)
@@ -65,7 +87,10 @@ def main():
             b = math.degrees(math.atan2(v[1], v[0])) % 360
             bias.append((b - shadow_az + 180) % 360 - 180)
             print(f"   person {person}: shadow bearing {b:.1f} deg, length {np.hypot(*v):.2f} m -> heading bias {bias[-1]:+.1f} deg")
-        print(f"   mean heading bias {sum(bias) / len(bias):+.1f} deg")
+        mean = sum(bias) / len(bias)
+        print(f"   mean heading bias {mean:+.1f} deg")
+        for m, (before, after) in corrected_errors(name, t["latitude"], t["longitude"], mean).items():
+            print(f"   {m}: position error {before:.2f} m -> {after:.2f} m with the yaw correction")
 
 
 if __name__ == "__main__":
