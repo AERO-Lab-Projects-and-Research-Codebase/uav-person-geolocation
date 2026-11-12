@@ -80,7 +80,7 @@ which are here, and the commands below rebuild them.
 | Table and figure: second UAV | `reference_validation/outputs/minise_20261101_flight4*/` | `cd reference_validation; python score_minise_flight.py --sheet 8`; `python Paper/build_uavb_figure.py` |
 | Table and figures: three people | `Skydio_Flight_Experiment/outputs/` | `python Skydio_Flight_Experiment/build_error_charts.py`; `python Skydio_Flight_Experiment/build_topdown.py`; `python Paper/build_three_person_figure.py` |
 | Heading check from shadows | the flight photographs | `python Skydio_Flight_Experiment/check_heading_from_shadows.py` |
-| Ground-point correction test (not in the paper) | `Skydio_Flight_Experiment/outputs/`, `outputs_11_9/` | `python Skydio_Flight_Experiment/ground_point_correction.py outputs outputs_11_9` |
+| Table: correction from known ground points | `Skydio_Flight_Experiment/outputs/`, `outputs_11_9/` | `python Skydio_Flight_Experiment/ground_point_correction.py outputs outputs_11_9` |
 | Pipeline figure | — | `python Paper/build_pipeline_figure.py` |
 
 `Skydio_Flight_Experiment/run_experiment.py` reruns the three-person test end to end when the photographs are placed in

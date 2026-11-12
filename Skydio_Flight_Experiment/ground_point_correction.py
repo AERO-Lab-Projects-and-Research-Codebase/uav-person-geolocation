@@ -8,8 +8,9 @@ A rigid move in the ground plane removes a heading error and a drone position er
 camera tilt, so it does not need to know which of them caused the error.
 
 Usage: python Skydio_Flight_Experiment/ground_point_correction.py outputs outputs_11_9
-Prints the mean position error (m) per altitude for the UniDepth V2 run. The known points are within 5-9 m of the
-scored person in both flights; how far from the known points the correction holds is not tested here.
+Prints the mean position error (m) per altitude for the UniDepth V2 run. With two known points the nearer
+is 5-9 m from the scored person and with one it is 5-16 m away; how far from a known point the correction holds
+is not tested here.
 """
 import cmath
 import csv
@@ -22,7 +23,7 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent / "reference_validation"))
 from compare_to_ground_truth import local_enu  # noqa: E402
 
-METHODS = ("ground_plane", "ground_scaled", "fusion", "depth_ray")
+METHODS = ("ground_plane", "ground_scaled", "scaled_fusion", "fusion", "depth_ray")
 CASES = ("no known point", "1 known point (shift)", "2 known points (turn + shift)")
 
 
