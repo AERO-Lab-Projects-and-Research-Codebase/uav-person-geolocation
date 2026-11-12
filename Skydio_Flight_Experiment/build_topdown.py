@@ -31,9 +31,7 @@ real = {r["person"]: enu(float(r["lat"]), float(r["lon"])) for r in truth_rows}
 TOL_M = round(max(float(r.get("hover_offset_m") or 0.6) for r in truth_rows), 1)  # largest nadir hover offset from the head
 rows = {r["person"]: r for r in csv.DictReader((OUT / "people.csv").open()) if r["image"] == PHOTO and r["model"] == "unidepth"}
 assert set(rows) == set(real) == {"1", "2", "3"}, set(rows)
-est = {m: {p: enu(float(r[f"{m}_lat"]), float(r[f"{m}_lon"])) for p, r in rows.items()} for m in ("depth_ray", "ground_scaled", "ground_plane")}
-# F1, the fusion rule fed with the scaled ray: the ray is steep, so it averages the E1 and ground positions
-est["f1"] = {p: tuple((a + b) / 2 for a, b in zip(est["ground_scaled"][p], est["ground_plane"][p])) for p in rows}
+est = {m: {p: enu(float(r[f"{m}_lat"]), float(r[f"{m}_lon"])) for p, r in rows.items()} for m in ("depth_ray", "ground_scaled", "ground_plane", "scaled_fusion")}  # scaled_fusion is the paper's F1
 
 
 def dist(p, i):
@@ -69,7 +67,7 @@ ax.add_patch(Polygon(footprint(pose), closed=True, fill=False, ec="0.45", ls="--
 ax.plot(0, 0, "k+", ms=7, mew=1.2)
 ax.text(0.4, 0.4, "UAV", fontsize=7.5)
 series = [("A1 UniDepth V2", est["depth_ray"], "#7570b3", "D"), ("E1 Ground-scaled A1", est["ground_scaled"], "#d95f02", "^"),
-          ("F1 Scaled fusion (E1 + ground)", est["f1"], "#a6761d", "s")]
+          ("F1 Scaled fusion (E1 + ground)", est["scaled_fusion"], "#a6761d", "s")]
 # label centres sit about 2.5 m beside a marker (W/E) or 0.6 m above/below it (N/S) at this scale
 centre = lambda x, y, dx, dy: (x + dx * 4.5, y + dy * 1.6)  # noqa: E731
 # Every marker and label anchor in (east, north); each estimate label takes the side farthest from all of them.

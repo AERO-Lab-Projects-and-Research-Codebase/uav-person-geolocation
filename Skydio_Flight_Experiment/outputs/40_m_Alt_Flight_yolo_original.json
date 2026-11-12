@@ -51,6 +51,14 @@
      "lat": 33.935993904175675,
      "lon": -84.52711684268901,
      "range_m": 35.0675384681127
+    },
+    "scaled_fusion": {
+     "status": "estimated",
+     "reason": null,
+     "lat": 33.93598884091129,
+     "lon": -84.5271207303369,
+     "range_m": 9.92653206282796,
+     "source": "mean"
     }
    },
    "disagreement_m": 9.899434593363598
@@ -99,6 +107,14 @@
      "lat": 33.93599309717142,
      "lon": -84.52711485487336,
      "range_m": 34.93981477617906
+    },
+    "scaled_fusion": {
+     "status": "estimated",
+     "reason": null,
+     "lat": 33.9359884757001,
+     "lon": -84.52711988465975,
+     "range_m": 9.874104952225743,
+     "source": "mean"
     }
    },
    "disagreement_m": 9.926406454336439
@@ -147,6 +163,14 @@
      "lat": 33.936001614246734,
      "lon": -84.52712767822516,
      "range_m": 36.1116905108158
+    },
+    "scaled_fusion": {
+     "status": "estimated",
+     "reason": null,
+     "lat": 33.93599874069818,
+     "lon": -84.52713315021046,
+     "range_m": 10.52788611494225,
+     "source": "mean"
     }
    },
    "disagreement_m": 10.46353356430021
@@ -195,6 +219,14 @@
      "lat": 33.936029087090766,
      "lon": -84.52714934719715,
      "range_m": 37.829814322148856
+    },
+    "scaled_fusion": {
+     "status": "estimated",
+     "reason": null,
+     "lat": 33.936027681004134,
+     "lon": -84.52715281885817,
+     "range_m": 11.729546800083362,
+     "source": "mean"
     }
    },
    "disagreement_m": 11.311601790908842
@@ -243,6 +275,14 @@
      "lat": 33.9360783804103,
      "lon": -84.52713919072994,
      "range_m": 38.76420687802806
+    },
+    "scaled_fusion": {
+     "status": "estimated",
+     "reason": null,
+     "lat": 33.936078790504766,
+     "lon": -84.52714105078394,
+     "range_m": 11.888772866017582,
+     "source": "mean"
     }
    },
    "disagreement_m": 11.298972352500494
@@ -291,6 +331,14 @@
      "lat": 33.93603682410423,
      "lon": -84.52706230363309,
      "range_m": 33.27809884183166
+    },
+    "scaled_fusion": {
+     "status": "estimated",
+     "reason": null,
+     "lat": 33.936036426702586,
+     "lon": -84.52706421434101,
+     "range_m": 3.5847746585817006,
+     "source": "mean"
     }
    },
    "disagreement_m": 3.528498793159562
@@ -339,6 +387,14 @@
      "lat": 33.936105372895035,
      "lon": -84.52709970023386,
      "range_m": 38.43051938010981
+    },
+    "scaled_fusion": {
+     "status": "estimated",
+     "reason": null,
+     "lat": 33.936106660116955,
+     "lon": -84.52710023054746,
+     "range_m": 10.849974406452048,
+     "source": "mean"
     }
    },
    "disagreement_m": 10.293259964538498
@@ -387,12 +443,20 @@
      "lat": null,
      "lon": null,
      "range_m": null
+    },
+    "scaled_fusion": {
+     "status": "estimated",
+     "reason": null,
+     "lat": 33.93647533246088,
+     "lon": -84.52736765435861,
+     "range_m": 70.67354943387072,
+     "source": "ground_plane"
     }
    },
    "disagreement_m": 52.685381506013165
   }
  ],
- "seconds": 0.7780227000184823,
+ "seconds": 0.9068719999995665,
  "photo": "40_m_Alt_Flight.JPG",
  "pose": {
   "lat": 33.93603088848493,

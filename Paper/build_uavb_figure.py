@@ -20,11 +20,10 @@ HOME = (33.936054, -84.526896)  # takeoff fix in the flight log, the reference
 
 
 def scaled_fusion():
-    """F1: the fusion rule fed with the ground-scaled ray; every ray is steep, so it averages the E1 and ground positions."""
+    """F1: the pipeline's scaled_fusion, the fusion rule fed with the ground-scaled ray."""
     rows = list(csv.DictReader(open(HERE.parent / "reference_validation/outputs" / f"{RUN}_ground_scaled" / "people.csv", encoding="utf-8")))
     assert len(rows) == 12
-    d = [math.hypot(*local_enu(*HOME, (float(r["ground_scaled_lat"]) + float(r["ground_plane_lat"])) / 2,
-                              (float(r["ground_scaled_lon"]) + float(r["ground_plane_lon"])) / 2)) for r in rows]
+    d = [math.hypot(*local_enu(*HOME, float(r["scaled_fusion_lat"]), float(r["scaled_fusion_lon"]))) for r in rows]
     return sum(d) / len(d)
 
 

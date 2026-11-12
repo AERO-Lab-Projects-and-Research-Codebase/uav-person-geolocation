@@ -7,10 +7,7 @@ Reads outputs/people.csv and outputs/summary.csv (run_experiment.py); also copie
 Usage: python Skydio_Flight_Experiment/build_error_charts.py
 """
 import csv
-import json
-import math
 import statistics as st
-import sys
 from collections import defaultdict
 from pathlib import Path
 
@@ -19,28 +16,11 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 HERE = Path(__file__).resolve().parent
-sys.path.insert(0, str(HERE.parent / "reference_validation"))
-from compare_to_ground_truth import local_enu  # noqa: E402
 
 OUT = HERE / "outputs"
 FIG = HERE.parent / "Paper/figures"
 rows = list(csv.DictReader((OUT / "people.csv").open()))
 summary = {(r["model"], r["method"]): r for r in csv.DictReader((OUT / "summary.csv").open())}
-truth = {r["person"]: (float(r["lat"]), float(r["lon"])) for r in csv.DictReader((OUT / "truth.csv").open())}
-_poses = {}
-
-
-def f1(r):
-    """F1, the fusion rule fed with the ground-scaled ray: every ray is steep, so it averages the E1 and ground positions.
-    Returns (position error m, signed horizontal range error m) for one UniDepth row of people.csv."""
-    stem = Path(r["image"]).stem
-    if stem not in _poses:
-        _poses[stem] = json.loads((OUT / f"{stem}_unidepth.json").read_text())["pose"]
-    pose = _poses[stem]
-    lat = (float(r["ground_scaled_lat"]) + float(r["ground_plane_lat"])) / 2
-    lon = (float(r["ground_scaled_lon"]) + float(r["ground_plane_lon"])) / 2
-    return (math.hypot(*local_enu(*truth[r["person"]], lat, lon)),
-            math.hypot(*local_enu(pose["lat"], pose["lon"], lat, lon)) - float(r["truth_horizontal_m"]))
 
 # (model in people.csv, method column prefix, label, colour, marker)
 SERIES = [("unidepth", "depth_ray", "A1 UniDepth V2", "#1b9e77", "o"),
@@ -50,7 +30,7 @@ SERIES = [("unidepth", "depth_ray", "A1 UniDepth V2", "#1b9e77", "o"),
           ("yolo_finetuned", "depth_ray", "C Fine-tuned YOLO26x", "#e7298a", "P"),
           ("unidepth", "fusion", "D1 Fusion (A1 + ground)", "#d95f02", "^"),
           ("unidepth", "ground_scaled", "E1 Ground-scaled A1", "#e6ab02", "x"),
-          ("unidepth", "f1", "F1 Scaled fusion (E1 + ground)", "#a6761d", "*")]
+          ("unidepth", "scaled_fusion", "F1 Scaled fusion (E1 + ground)", "#a6761d", "*")]  # F1 is the pipeline's scaled_fusion
 ZOOM_LO, ZOOM_HI = -2.75, 2.45
 
 
@@ -58,9 +38,7 @@ def signed(model, method):
     """Mean signed horizontal range error at each altitude label."""
     by_alt = defaultdict(list)
     for r in rows:
-        if method == "f1" and r["model"] == model:
-            by_alt[int(r["altitude_label_m"])].append(f1(r)[1])
-        elif r["model"] == model and r.get(f"{method}_range_error_m"):
+        if r["model"] == model and r.get(f"{method}_range_error_m"):
             by_alt[int(r["altitude_label_m"])].append(float(r[f"{method}_range_error_m"]))
     return {a: st.fmean(v) for a, v in sorted(by_alt.items())}
 
@@ -116,7 +94,7 @@ def range_error_chart():
 
 
 def position_error_chart():
-    bars = [("F1 Scaled fusion (E1 + ground)", "F1", "#a6761d"),
+    bars = [("F1 Scaled fusion (E1 + ground)", ("UniDepth V2", "scaled_fusion"), "#a6761d"),
             ("D1 Fusion (A1 + ground)", ("UniDepth V2", "fusion"), "#d95f02"),
             ("E1 Ground-scaled A1", ("UniDepth V2", "ground_scaled"), "#e6ab02"),
             ("A2 LingBot", ("LingBot (UniDepth-seeded)", "depth_ray"), "#1b9e77"),
@@ -125,10 +103,8 @@ def position_error_chart():
             ("A4 YOLO26-depth", ("YOLO original", "depth_ray"), "0.6"),
             ("C Fine-tuned YOLO26x", ("YOLO fine-tuned (AerialMetric)", "depth_ray"), "#7570b3")][::-1]
     names = [b[0] for b in bars]
-    f1_errors = [f1(r)[0] for r in rows if r["model"] == "unidepth"]
-    assert len(f1_errors) == 36
-    vals = [st.fmean(f1_errors) if b[1] == "F1" else float(summary[b[1]]["all_pos_mean_m"]) for b in bars]
-    assert all(b[1] == "F1" or summary[b[1]]["n"] == "36" for b in bars)
+    vals = [float(summary[b[1]]["all_pos_mean_m"]) for b in bars]
+    assert all(summary[b[1]]["n"] == "36" for b in bars)
     fig, ax = plt.subplots(figsize=(3.9, 2.7), layout="constrained")
     ax.axvspan(0, 0.6, color="0.92", lw=0, zorder=0)
     ax.barh(names, vals, color=[b[2] for b in bars], height=0.7)

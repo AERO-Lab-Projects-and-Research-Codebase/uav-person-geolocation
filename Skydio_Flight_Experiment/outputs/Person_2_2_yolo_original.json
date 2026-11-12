@@ -51,6 +51,14 @@
      "lat": 33.93606358426725,
      "lon": -84.52713796058994,
      "range_m": 5.572518830326165
+    },
+    "scaled_fusion": {
+     "status": "estimated",
+     "reason": null,
+     "lat": 33.93606603127499,
+     "lon": -84.52713421345139,
+     "range_m": 2.464113863064145,
+     "source": "mean"
     }
    },
    "disagreement_m": 2.378556778058666
@@ -99,6 +107,14 @@
      "lat": 33.93607425832253,
      "lon": -84.52713824746534,
      "range_m": 5.45037215695143
+    },
+    "scaled_fusion": {
+     "status": "estimated",
+     "reason": null,
+     "lat": 33.93608210773274,
+     "lon": -84.52712976115212,
+     "range_m": 7.353492457453775,
+     "source": "ground_plane"
     }
    },
    "disagreement_m": 3.19189738135679
@@ -147,12 +163,20 @@
      "lat": 33.93605498820323,
      "lon": -84.52715774671313,
      "range_m": 5.454395321296624
+    },
+    "scaled_fusion": {
+     "status": "estimated",
+     "reason": null,
+     "lat": 33.93605680884919,
+     "lon": -84.52715568485375,
+     "range_m": 6.250751865029554,
+     "source": "ground_plane"
     }
    },
    "disagreement_m": 0.23795910956320163
   }
  ],
- "seconds": 0.8388917999982368,
+ "seconds": 0.9562069999992673,
  "photo": "Person_2_2.JPG",
  "pose": {
   "lat": 33.936056375176264,
