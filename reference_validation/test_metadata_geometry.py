@@ -71,6 +71,19 @@ class GroundScaleTests(unittest.TestCase):
         self.assertAlmostEqual(person["ground_scaled"]["slant_range_m"], person["slant_range_m"]*placed["ground_scale"], places=6)
         self.assertNotIn("ground_scaled", apply_capture_geometry(result_fixture(), capture, shape)["people"][0])
 
+    def test_scaled_fusion_feeds_the_fusion_rule_with_the_scaled_ray(self):
+        capture, shape = fixture(), (512, 640)
+        depth = np.kron(flat_ground_depth(capture, (64, 80), .5), np.ones((8, 8)))    # the model reads half the true depth
+        result = result_fixture()
+        result["people"][0]["depth_m"] = 8.                                            # 5.7 m out raw, 11.3 m scaled; plane 10 m
+        person = apply_capture_geometry(result, capture, shape, depth_map=depth)["people"][0]
+        scaled, ground, fused = person["ground_scaled"], person["ground_plane"], person["scaled_fusion"]
+        self.assertEqual(person["fusion"]["source"], "ground_plane")                   # raw ray too short to average
+        self.assertEqual((fused["status"], fused["source"]), ("estimated", "mean"))    # scaled, the two agree and average
+        self.assertAlmostEqual(fused["north_m"], (scaled["north_m"]+ground["north_m"])/2, places=9)
+        self.assertAlmostEqual(fused["latitude"], (scaled["latitude"]+ground["latitude"])/2, places=12)
+        self.assertNotIn("scaled_fusion", apply_capture_geometry(result_fixture(), capture, shape)["people"][0])
+
     def test_scaled_estimate_respects_the_depth_limit(self):
         capture, shape = fixture(), (512, 640)
         depth = np.kron(flat_ground_depth(capture, (64, 80), .1), np.ones((8, 8)))    # scale 10 puts 20 m at 200 m

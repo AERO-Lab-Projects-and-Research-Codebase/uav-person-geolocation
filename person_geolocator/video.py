@@ -21,7 +21,7 @@ COLUMNS = {"lat": "OSD.latitude", "lon": "OSD.longitude", "altitude_hae": "OSD.a
 # Heading is the aircraft yaw: the Mini SE camera cannot yaw relative to the body, OSD.yaw matches the photos'
 # FlightYawDegree, and the log's GIMBAL.yaw read a constant 5 deg off it on the 2026-10-27 flight.
 # ponytail: a drone with a yaw gimbal needs GIMBAL.yaw (absolute) here instead.
-METHODS = ("depth_ray", "ground_plane", "terrain", "fusion", "ground_scaled")
+METHODS = ("depth_ray", "ground_plane", "terrain", "fusion", "ground_scaled", "scaled_fusion")
 
 
 def load_log(path):

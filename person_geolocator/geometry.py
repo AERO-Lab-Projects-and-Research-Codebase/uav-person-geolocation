@@ -53,7 +53,8 @@ def _method(item, range_key):
 
 
 def place_people(people, capture, shape, max_depth_m=100., depth_map=None):
-    """Depth-ray, ground-plane and fusion positions; with the depth map, also the ground-scaled depth ray."""
+    """Depth-ray, ground-plane and fusion positions; with the depth map, also the ground-scaled depth ray and
+    the fusion of that scaled ray with the ground plane."""
     result = apply_capture_geometry({"people": [dict(p, depth_mode="axial") for p in people]},
                                     capture, shape, max_depth_m=max_depth_m, depth_map=depth_map)
     terrain = terrain_for(capture)
@@ -67,5 +68,6 @@ def place_people(people, capture, shape, max_depth_m=100., depth_map=None):
             methods["terrain"] = _method(terrain_items[i], "ground_range_m")
         if depth_map is not None:
             methods["ground_scaled"] = _method(person["ground_scaled"], "slant_range_m")
+            methods["scaled_fusion"] = dict(_method(person["scaled_fusion"], "range_m"), source=person["scaled_fusion"]["source"])
         placed.append({**people[i], "methods": methods, "disagreement_m": person.get("estimate_disagreement_m")})
     return placed

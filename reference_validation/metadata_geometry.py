@@ -254,7 +254,8 @@ def apply_capture_geometry(result, capture, frame_shape, *, max_depth_m=100., de
     surveyed ground is supplied: launch-plane intersections remain conditional.
     With ``depth_map`` (the axial depth map the torso samples came from) each
     person also gets ``ground_scaled``: the depth-ray position with the depth
-    multiplied by ``ground_scale``, stored on the result.
+    multiplied by ``ground_scale``, stored on the result, and ``scaled_fusion``:
+    the fusion rule fed with that scaled ray in place of the raw one.
     """
     result = copy.deepcopy(result)
     max_depth_m = _number(max_depth_m)
@@ -343,4 +344,6 @@ def apply_capture_geometry(result, capture, frame_shape, *, max_depth_m=100., de
             person["estimate_disagreement_m"] = math.hypot(person["north_m"]-ground["north_m"], person["east_m"]-ground["east_m"])
     for person in result.get("people", []):
         person["fusion"] = fuse_estimates(person, person["ground_plane"])
+        if depth_map is not None:
+            person["scaled_fusion"] = fuse_estimates(person["ground_scaled"], person["ground_plane"])
     return result

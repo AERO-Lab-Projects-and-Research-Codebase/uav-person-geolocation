@@ -43,7 +43,8 @@ def main(argv=None, locate_fn=None):
         print(f"#{p['index']} depth {depth}\n  depth-ray    {_where(m['depth_ray'])}\n  ground-plane {_where(m['ground_plane'])}"
               + (f"\n  terrain      {_where(m['terrain'])}" if "terrain" in m else "")
               + (f"\n  ground-scaled {_where(m['ground_scaled'])}" if "ground_scaled" in m else "")
-              + f"\n  fusion       {_where(m['fusion'])} ({m['fusion']['source'] or 'no source'})")
+              + f"\n  fusion       {_where(m['fusion'])} ({m['fusion']['source'] or 'no source'})"
+              + (f"\n  scaled fusion {_where(m['scaled_fusion'])} ({m['scaled_fusion']['source'] or 'no source'})" if "scaled_fusion" in m else ""))
     jpeg = result.pop("annotated_jpeg", None)
     if args.annotated and jpeg:
         args.annotated.write_bytes(jpeg)
